@@ -8,10 +8,8 @@ Ce script SQL couvre l'intégralité du pipeline de données :
 3. Analyse statistique finale (KPIs par niveau d'expérience).
 */
 
--- =============================================================================
+
 -- 1. CRÉATION DE LA TABLE BRUTE (RAW DATA)
--- =============================================================================
-DROP TABLE IF EXISTS data_jobs;
 
 CREATE TABLE data_jobs (
     work_year INT,
@@ -27,15 +25,9 @@ CREATE TABLE data_jobs (
     company_size VARCHAR(50)
 );
 
--- NOTE POUR L'UTILISATEUR : 
--- À cette étape, importez le fichier CSV 'ds_salaries.csv' via l'interface PgAdmin 
--- (Clic droit sur la table > Import/Export Data).
+-- 2. EXPLORATION RAPIDE (Qualité des données)
 
-
--- =============================================================================
--- 2. EXPLORATION RAPIDE (DATA QUALITY CHECK)
--- =============================================================================
--- Vérification du volume de données pour la France
+-- Vérification du volume de données pour la France (L'idée c'est de voir si on a assez de données pour la France)
 SELECT COUNT(*) as total_offres_france 
 FROM data_jobs 
 WHERE company_location = 'FR';
@@ -47,15 +39,12 @@ WHERE company_location = 'FR'
 GROUP BY salary_currency;
 
 
--- =============================================================================
 -- 3. NETTOYAGE ET TRANSFORMATION (DATA CLEANING)
--- =============================================================================
+
 -- Création d'une table dédiée 'france_jobs_clean' :
 -- 1. Filtrage uniquement sur la France.
 -- 2. Standardisation des titres de postes (Data Analyst, Scientist, Engineer).
 -- 3. Conversion des salaires en EUR (Taux fixes estimés : GBP=1.15, USD=0.95).
-
-DROP TABLE IF EXISTS france_jobs_clean;
 
 CREATE TABLE france_jobs_clean AS
 SELECT
@@ -79,14 +68,12 @@ SELECT
         ELSE NULL 
     END AS salary_in_eur,
     
-    company_size
 FROM data_jobs
 WHERE company_location = 'FR';
 
 
--- =============================================================================
 -- 4. ANALYSE STATISTIQUE (KPIs)
--- =============================================================================
+
 -- Objectif : Comparer les salaires moyens et la volatilité par métier et séniorité.
 -- Ce résultat est exporté pour la visualisation dans Tableau/Power BI.
 
@@ -94,12 +81,13 @@ SELECT
     job_category,
     experience_level,
     COUNT(*) AS nombre_emplois,
-    ROUND(AVG(salary_in_eur)) AS salaire_moyen_eur,
+    ROUND(AVG(salary_in_eur)) AS salaire_moyen_eur, -- Salaires moyen par carégories
     MAX(salary_in_eur) AS salaire_max_eur,
     MIN(salary_in_eur) AS salaire_min_eur,
     ROUND(STDDEV(salary_in_eur)) AS ecart_type_salaire -- Mesure de la dispersion des salaires
 FROM france_jobs_clean
 GROUP BY 1, 2
 ORDER BY job_category, salaire_moyen_eur DESC;
+
 
 -- Fin du script
