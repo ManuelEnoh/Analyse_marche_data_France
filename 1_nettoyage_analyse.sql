@@ -56,7 +56,6 @@ SELECT
         WHEN job_title LIKE '%Analyst%' THEN 'Data Analyst'
         WHEN job_title LIKE '%Scientist%' THEN 'Data Scientist'
         WHEN job_title LIKE '%Engineer%' THEN 'Data Engineer'
-        WHEN job_title IN ('Consultant', 'Stage') THEN 'Support/Stage'
         ELSE 'Autres' -- Regroupement des titres minoritaires
     END AS job_category,
     
@@ -91,3 +90,4 @@ ORDER BY job_category, salaire_moyen_eur DESC;
 
 
 -- Fin du script
+
