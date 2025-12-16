@@ -22,5 +22,4 @@ D) Principaux Résultats
 Junior (Entry-Level) : Le Data Scientist commence avec le salaire le plus élevé (~51k€), suivi de près par le Data Analyst.
 Anomalie Senior : On observe une anomalie sur les profils Data Analyst Senior (96k€). L'analyse SQL de l'écart-type révèle une forte volatilité, suggérant la présence de profils Freelances/Experts qui tirent la moyenne vers le haut.
 Structure du marché : Le marché français recrute majoritairement des profils Juniors et Intermédiaires.
-
-Projet réalisé par Emmanuel Enoh.
+Emmanuel Enoh.
